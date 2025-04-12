@@ -1,0 +1,36 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Funcionario {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  codigo          Int?     @unique
+  nome            String
+  cpf             String   @unique
+  situacao        String   @default("A")
+  dataCriacao     DateTime @default(now())
+  dataAlteracao   DateTime @updatedAt 
+  tickets         Ticket[]
+  
+  @@map("funcionarios")
+}
+
+model Ticket {
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  funcionario     Funcionario @relation(fields: [funcionarioId], references: [id])
+  funcionarioId   String     @db.ObjectId
+  codigoFuncionario Int
+  quantidade      Int
+  situacao        String    @default("A")
+  dataEntrega     DateTime   @default(now())
+  dataModificacao DateTime   @updatedAt
+  
+  @@map("tickets")
+}
