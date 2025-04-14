@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Funcionario {
+  id        String   @id @default(uuid())
+  nome      String
+  cpf       String   @unique
+  situacao  String   @default("A")
+  codigo    Int      @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  tickets   Ticket[]
+
+  @@map("funcionarios")
+}
+
+model Ticket {
+  id               String     @id @default(uuid())
+  quantidade       Int
+  situacao         String     @default("A")
+  codigoFuncionario Int
+  dataModificacao  DateTime   @default(now()) @map("data_modificacao")
+  funcionarioId    String
+  funcionario      Funcionario @relation(fields: [funcionarioId], references: [id])
+
+  @@map("tickets")
+}

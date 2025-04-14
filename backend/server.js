@@ -7,7 +7,7 @@ const prisma = new PrismaClient({
   log: ["query", "info", "warn", "error"],
 });
 
-// Verify database connection on startup
+// Verificar conexão com o banco de dados na inicialização
 prisma
   .$connect()
   .then(() => console.log("✅ Connected to database successfully"))
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 // Obter __dirname em ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use(express.static(path.join(__dirname, "ticket-system")));
+app.use(express.static(path.join(__dirname, "../frontend/public")));
 
 // Rotas para Funcionários
 app.get("/api/funcionarios", async (_req, res) => {
@@ -43,6 +43,7 @@ app.get("/api/funcionarios", async (_req, res) => {
 });
 
 app.post("/api/funcionarios", async (req, res) => {
+  console.log("Recebendo requisição para cadastrar funcionário:", req.body);
   try {
     const { nome, cpf, situacao = "A", codigo } = req.body;
 
@@ -54,10 +55,19 @@ app.post("/api/funcionarios", async (req, res) => {
       });
     }
 
+    // Validação básica de formato (11 dígitos numéricos)
     if (!cpf || !/^\d{11}$/.test(cpf)) {
       return res.status(400).json({
         error: "CPF deve conter exatamente 11 dígitos numéricos",
         field: "cpf",
+      });
+    }
+
+    // Validar situação
+    if (situacao && !["A", "I"].includes(situacao)) {
+      return res.status(400).json({
+        error: "Situação deve ser 'A' (Ativo) ou 'I' (Inativo)",
+        field: "situacao",
       });
     }
 
@@ -100,6 +110,7 @@ app.post("/api/funcionarios", async (req, res) => {
         codigo: employeeCode,
       },
     });
+    console.log("Funcionário cadastrado com sucesso:", novoFuncionario);
 
     res.status(201).json({
       ...novoFuncionario,
@@ -121,7 +132,7 @@ app.post("/api/funcionarios", async (req, res) => {
       };
     }
 
-    // Include additional error details for client-side handling
+    // Incluir detalhes adicionais de erro para tratamento do lado do cliente
     const enhancedError = {
       ...errorResponse,
       timestamp: new Date().toISOString(),
@@ -129,6 +140,26 @@ app.post("/api/funcionarios", async (req, res) => {
       statusCode: err.code === "P2002" ? 409 : 500,
     };
     res.status(enhancedError.statusCode).json(enhancedError);
+  }
+});
+
+app.get("/api/funcionarios/:id", async (req, res) => {
+  try {
+    const funcionario = await prisma.funcionario.findUnique({
+      where: { id: req.params.id },
+    });
+
+    if (!funcionario) {
+      return res.status(404).json({ error: "Funcionário não encontrado" });
+    }
+
+    res.json({
+      ...funcionario,
+      dataCriacao: funcionario.createdAt,
+      dataAlteracao: funcionario.updatedAt,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -140,7 +171,6 @@ app.put("/api/funcionarios/:id", async (req, res) => {
         nome: req.body.nome,
         cpf: req.body.cpf,
         situacao: req.body.situacao || "A",
-        dataAlteracao: new Date(),
       },
     });
     res.json(funcionario);
@@ -169,10 +199,12 @@ app.post("/api/tickets", async (req, res) => {
       return res.status(400).json({ error: "Dados incompletos" });
     }
 
-    // Verificar se funcionário existe e está ativo
-    console.log("Buscando funcionário por código:", req.body.funcionarioId);
-    const funcionario = await prisma.funcionario.findFirst({
-      where: { codigo: parseInt(req.body.funcionarioId) },
+    const { funcionarioId, quantidade, situacao = "A" } = req.body;
+
+    // Verificar se funcionário existe
+    console.log("Buscando funcionário por ID:", funcionarioId);
+    const funcionario = await prisma.funcionario.findUnique({
+      where: { id: funcionarioId },
     });
 
     if (!funcionario) {
@@ -181,17 +213,19 @@ app.post("/api/tickets", async (req, res) => {
     }
     if (funcionario.situacao !== "A") {
       console.log("Funcionário inativo");
-      return res
-        .status(400)
-        .json({ error: "Funcionário inativo não pode receber tickets" });
+      return res.status(400).json({
+        error: "Não é possível criar ticket para funcionário inativo",
+      });
     }
 
     console.log("Criando novo ticket...");
     const ticket = await prisma.ticket.create({
       data: {
-        quantidade: parseInt(req.body.quantidade),
+        quantidade: parseInt(quantidade),
         funcionarioId: funcionario.id,
-        codigoFuncionario: parseInt(req.body.funcionarioId),
+        codigoFuncionario: funcionario.codigo, 
+        situacao,
+        dataModificacao: new Date(), 
       },
     });
 
@@ -262,9 +296,109 @@ app.get("/api/relatorios/periodo", async (req, res) => {
   }
 });
 
+app.get("/api/relatorios/detalhado", async (req, res) => {
+  try {
+    const { funcionarioId, inicio, fim } = req.query;
+
+    const whereClause = {
+      situacao: "A",
+      dataModificacao: {
+        gte: inicio ? new Date(inicio) : undefined,
+        lte: fim ? new Date(fim) : undefined,
+      },
+    };
+
+  
+    if (!funcionarioId || funcionarioId === "todos") {
+      const result = await prisma.ticket.groupBy({
+        by: ["funcionarioId"],
+        where: whereClause,
+        _sum: {
+          quantidade: true,
+        },
+      });
+
+      if (result.length === 0) {
+        return res.json({
+          summary: [],
+          total: 0,
+        });
+      }
+
+      // Obter detalhes do funcionário
+      const funcionarios = await prisma.funcionario.findMany({
+        where: {
+          id: { in: result.map((r) => r.funcionarioId) },
+        },
+      });
+
+      // Calcular total geral
+      const totalGeral = result.reduce(
+        (sum, item) => sum + (item._sum.quantidade || 0),
+        0
+      );
+
+ 
+      const formattedResult = result.map((item) => ({
+        funcionario: funcionarios.find((f) => f.id === item.funcionarioId),
+        totalTickets: item._sum.quantidade || 0,
+      }));
+
+      return res.json({
+        summary: formattedResult,
+        total: totalGeral,
+      });
+    } else {
+      // Modo detalhado para funcionário específico - adicionar filtro explícito
+      const tickets = await prisma.ticket.findMany({
+        where: {
+          ...whereClause,
+          funcionarioId: funcionarioId, 
+        },
+        include: {
+          funcionario: true,
+        },
+        orderBy: {
+          dataModificacao: "desc",
+        },
+      });
+
+      return res.json(tickets);
+    }
+  } catch (err) {
+    console.error("Erro no relatório detalhado:", err);
+    res.status(500).json({
+      error: "Falha ao gerar relatório",
+      details: err.message,
+    });
+  }
+});
+
+// Rota de histórico de funcionários
+app.get("/api/funcionarios/historico", async (_req, res) => {
+  console.log("Recebida requisição para /api/funcionarios/historico");
+  try {
+    const funcionarios = await prisma.funcionario.findMany({
+      include: {
+        tickets: true,
+      },
+      orderBy: { nome: "asc" },
+    });
+
+    console.log(`Retornando ${funcionarios.length} funcionários`);
+    res.json(funcionarios);
+  } catch (err) {
+    console.error("Erro ao buscar funcionários:", err);
+    res.status(500).json({
+      error: "Falha ao carregar funcionários",
+      details: err.message,
+    });
+  }
+});
+
 // Rota de fallback
 app.get("*", (_req, res) => {
-  res.sendFile(path.join(__dirname, "ticket-system", "index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/public", "index.html"));
 });
 
 const PORT = process.env.PORT || 3001;

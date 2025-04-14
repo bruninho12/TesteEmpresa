@@ -15,8 +15,8 @@ model Funcionario {
   nome            String
   cpf             String   @unique
   situacao        String   @default("A")
-  dataCriacao     DateTime @default(now())
-  dataAlteracao   DateTime @updatedAt 
+  dataCriacao     DateTime? @default(now())
+  dataAlteracao   DateTime? @updatedAt 
   tickets         Ticket[]
   
   @@map("funcionarios")
@@ -29,8 +29,8 @@ model Ticket {
   codigoFuncionario Int
   quantidade      Int
   situacao        String    @default("A")
-  dataEntrega     DateTime   @default(now())
-  dataModificacao DateTime   @updatedAt
+  dataEntrega     DateTime?   @default(now())
+  dataModificacao DateTime?   @updatedAt
   
   @@map("tickets")
 }
