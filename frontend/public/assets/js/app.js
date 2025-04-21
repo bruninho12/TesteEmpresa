@@ -1,3 +1,4 @@
+// Controlador de aplicativo principal para o aplicativo da web.
 import {
   funcionariosView,
   ticketsView,
@@ -14,6 +15,7 @@ import {
 import { showAlert } from "./modules/utils.js";
 import * as api from "./modules/api.js";
 
+// Configuração do aplicativo, incluindo IDs de conteúdo e manipuladores de visualização.
 const APP_CONFIG = {
   contentId: "app-content",
   views: {
@@ -39,6 +41,7 @@ const APP_CONFIG = {
   },
 };
 
+// Função de inicialização do aplicativo.
 class AppController {
   constructor() {
     this.initNavigation();
@@ -55,6 +58,7 @@ class AppController {
     });
   }
 
+  // Carrega a visualização especificada, renderiza o conteúdo e configura os manipuladores de eventos.
   async loadView(viewName) {
     try {
       const viewConfig = APP_CONFIG.views[viewName];
@@ -72,6 +76,7 @@ class AppController {
     }
   }
 
+  // Define o item de navegação ativo com base na visualização atual.
   setActiveNav(activeView) {
     Object.keys(APP_CONFIG.views).forEach((view) => {
       const navItem = document.getElementById(`nav-${view}`);

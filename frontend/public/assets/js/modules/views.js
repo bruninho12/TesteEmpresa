@@ -1,6 +1,6 @@
 export const funcionariosView = `
   <section>
-    <h2>Gerenciar Funcionários NOVO</h2>
+    <h2>Gerenciar Funcionários</h2>
     <div class="form-container">
       <h3>Cadastrar/Editar Funcionário</h3>
       <form id="funcionario-form">
@@ -49,14 +49,15 @@ export const funcionariosView = `
         </div>
 
         <button type="submit" class="btn btn-primary">Salvar</button>
+        <button type="button" id="cancel-edit-btn" class="btn btn-secondary" style="display:none; margin-left: 10px;">Cancelar</button>
       </form>
     </div>
-
     <div class="table-container">
-      <h3>Histórico de Funcionários</h3>
-      <table id="funcionarios-historico-table">
-        <thead>
+      <h3>Funcionários Cadastrados</h3>
+      <table id="funcionarios-table" class="table table-striped">
+        <thead class="thead-dark">
           <tr>
+            <th>Código</th>
             <th>Nome</th>
             <th>CPF</th>
             <th>Situação</th>
@@ -121,11 +122,11 @@ export const relatoriosView = `
     <div class="report-section">
       <h3>Relatório Detalhado</h3>
       <form id="relatorio-form">
-        <div class="form-row">
+        <div class="form-relatorio">
           <div class="form-group col-md-3">
             <label for="relatorio-funcionario">Funcionário:</label>
             <select id="relatorio-funcionario" class="form-control">
-              <option value="">Todos</option>
+              <option value="">Todos</option> 
             </select>
           </div>
           <div class="form-group col-md-2">
@@ -136,7 +137,6 @@ export const relatoriosView = `
               <option value="I">Inativo</option>
             </select>
           </div>
-          <!-- Removido o campo de tipo de ticket -->
           <div class="form-group col-md-2">
             <label for="relatorio-inicio">Data Início:</label>
             <input type="date" id="relatorio-inicio" class="form-control">
@@ -146,7 +146,7 @@ export const relatoriosView = `
             <input type="date" id="relatorio-fim" class="form-control">
           </div>
           <div class="form-group col-md-1 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <button type="submit" class="btn btn-filtrar">Filtrar</button>
           </div>
         </div>
       </form>

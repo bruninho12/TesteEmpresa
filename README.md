@@ -2,38 +2,42 @@
 
 ## Descrição
 
-Este sistema é uma aplicação para gerenciamento de tickets de refeição, permitindo o controle de distribuição de tickets para funcionários. As principais funcionalidades incluem:
+Este sistema é uma aplicação para gerenciamento de tickets de refeição, permitindo o controle de distribuição de tickets para funcionários. As principais funcionalidades incluem cadastro de funcionários, gerenciamento de tickets e geração de relatórios detalhados.
 
 ## Funcionalidades
 
 - **Cadastro de Funcionários**:
 
-  - Permite o registro de novos funcionários com validação de CPF e situação (Ativo/Inativo).
+  - Registro de novos funcionários com validação de CPF e situação (Ativo/Inativo).
   - Cada funcionário possui um código único e pode ter múltiplos tickets associados.
+  - Atualização e consulta de dados dos funcionários.
 
 - **Gerenciamento de Tickets**:
 
   - Criação de tickets para funcionários ativos.
-  - Cada ticket possui uma quantidade e um status (Ativo/Inativo).
+  - Cada ticket possui quantidade, status (Ativo/Inativo), data de entrega e modificação.
   - Relacionamento entre tickets e funcionários para fácil rastreamento.
 
 - **Relatórios**:
   - Geração de relatórios sobre o total de tickets distribuídos.
   - Relatórios detalhados por funcionário, mostrando a quantidade total de tickets recebidos.
   - Filtragem de tickets por período específico.
+  - Relatórios detalhados com resumo e histórico por funcionário.
+
+
 
 ## Tecnologias Utilizadas
 
 - **Backend**: Node.js com Express
 - **Banco de Dados**: MongoDB utilizando Prisma como ORM
-- **Frontend**: HTML, CSS e JavaScript
+- **Frontend**: HTML, CSS (Bootstrap 5) e JavaScript (ES Modules)
 
 ## Como Executar
 
 1. Clone o repositório:
 
    ```bash
-   git clone <URL_DO_REPOSITORIO>
+   git clone https://github.com/seu-usuario/seu-repositorio.git
    cd EmpresaProjeto
    ```
 
@@ -65,3 +69,8 @@ Este sistema é uma aplicação para gerenciamento de tickets de refeição, per
 ## Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir um pull request ou relatar problemas.
+
+
+## Script da criação do Danco de Dados
+
+backend/database/database.sql

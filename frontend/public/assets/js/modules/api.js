@@ -67,14 +67,17 @@ export async function addTicket(ticket) {
 export async function getRelatorios(type, params = {}) {
   let url = `${API_BASE_URL}/relatorios/${type}`;
   const queryParams = [];
-  
-  if (params.funcionarioId) queryParams.push(`funcionarioId=${params.funcionarioId}`);
+
+  if (params.funcionarioId)
+    queryParams.push(`funcionarioId=${params.funcionarioId}`);
   if (params.status) queryParams.push(`status=${params.status}`);
-  // Campo de tipo de ticket removido
+
   if (params.inicio) queryParams.push(`inicio=${params.inicio}`);
   if (params.fim) queryParams.push(`fim=${params.fim}`);
 
-  const response = await fetch(url + (queryParams.length ? `?${queryParams.join('&')}` : ''));
+  const response = await fetch(
+    url + (queryParams.length ? `?${queryParams.join("&")}` : "")
+  );
   if (!response.ok) throw new Error("Falha ao carregar relatório");
   return await response.json();
 }

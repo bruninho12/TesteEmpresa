@@ -24,13 +24,27 @@ export function setupFuncionariosHandlers(funcionarios) {
           : await api.addFuncionario(formData);
 
         showAlert("Funcionário salvo com sucesso!");
+        setTimeout(() => {
+          location.reload();
+        }, 500);
       } catch (error) {
         showAlert(error.message, "danger");
       }
     });
+
+    // Lógica do botão Cancelar
+    const cancelBtn = document.getElementById("cancel-edit-btn");
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", () => {
+        form.reset();
+        document.getElementById("funcionario-id").value = "";
+        cancelBtn.style.display = "none";
+        document.getElementById("funcionario-info").style.display = "none";
+      });
+    }
   }
 
-  // Render table
+  // Tabela de renderização
   const tableBody = document.querySelector("#funcionarios-table tbody");
   if (tableBody) {
     tableBody.innerHTML = funcionarios
@@ -67,17 +81,25 @@ export function setupFuncionariosHandlers(funcionarios) {
         document.getElementById("funcionario-nome").value = btn.dataset.nome;
         document.getElementById("funcionario-cpf").value = btn.dataset.cpf;
 
-        // Set the correct radio button based on current status
+        // Defina o botão de opção correto com base no status atual
         if (btn.dataset.situacao === "A") {
           document.getElementById("funcionario-ativo").checked = true;
         } else {
           document.getElementById("funcionario-inativo").checked = true;
         }
 
-        // Show current employee info
+        // Mostrar informações atuais do funcionário
         document.getElementById("funcionario-info").style.display = "block";
-        // Get full employee data for additional fields
+
+        // Mostrar botão cancelar ao editar
+        const cancelBtn = document.getElementById("cancel-edit-btn");
+        if (cancelBtn) {
+          cancelBtn.style.display = "inline-block";
+        }
+
+        //Obtenha dados completos dos funcionários para campos adicionais
         const funcionario = await api.getFuncionario(btn.dataset.id);
+        console.log("Funcionario data fetched (raw):", funcionario);
 
         document.getElementById("funcionario-codigo").textContent =
           btn.parentElement.parentElement.cells[0].textContent;
@@ -103,7 +125,13 @@ export async function setupTicketsHandlers(tickets) {
       const funcionarios = await api.getFuncionarios();
       funcionarioSelect.innerHTML = funcionarios
         .filter((f) => f.situacao === "A")
-        .map((f) => `<option value="${f.id}">${f.codigo} - ${f.nome}</option>`)
+        .map(
+          (f) =>
+            `<option value="${f.id}">${f.codigo} - ${f.nome} - ${f.cpf.replace(
+              /(\d{3})(\d{3})(\d{3})(\d{2})/,
+              "$1.$2.$3-$4"
+            )}</option>`
+        )
         .join("");
     } catch (error) {
       showAlert("Falha ao carregar funcionários: " + error.message, "danger");
@@ -132,6 +160,9 @@ export async function setupTicketsHandlers(tickets) {
         const result = await api.addTicket(formData);
         showAlert("Ticket registrado com sucesso!");
         form.reset();
+        setTimeout(() => {
+          location.reload();
+        }, 500);
       } catch (error) {
         showAlert(error.message, "danger");
       }
@@ -250,9 +281,19 @@ export async function setupRelatoriosHandlers() {
   if (funcionarioSelect) {
     try {
       const funcionarios = await api.getFuncionarios();
-      funcionarioSelect.innerHTML = funcionarios
-        .map((f) => `<option value="${f.id}">${f.codigo} - ${f.nome}</option>`)
-        .join("");
+      funcionarioSelect.innerHTML =
+        `<option value="todos">Todos</option>` +
+        funcionarios
+          .map(
+            (f) =>
+              `<option value="${f.id}">${f.codigo} - ${
+                f.nome
+              } - ${f.cpf.replace(
+                /(\d{3})(\d{3})(\d{3})(\d{2})/,
+                "$1.$2.$3-$4"
+              )}</option>`
+          )
+          .join("");
     } catch (error) {
       showAlert("Falha ao carregar funcionários: " + error.message, "danger");
     }
@@ -264,8 +305,8 @@ export async function setupRelatoriosHandlers() {
       e.preventDefault();
       try {
         const funcionarioId =
-          document.getElementById("relatorio-funcionario").value === ""
-            ? "todos"
+          document.getElementById("relatorio-funcionario").value === "todos"
+            ? ""
             : document.getElementById("relatorio-funcionario").value;
         const status = document.getElementById("relatorio-status").value;
         const inicio = document.getElementById("relatorio-inicio").value;
@@ -293,9 +334,16 @@ export async function setupRelatoriosHandlers() {
             .map(
               (item) => `
                 <tr>
+                  <td>${formatDate(item.data)}</td>
                   <td>${item.funcionario.nome}</td>
-                  <td>${item.funcionario.codigo}</td>
                   <td>${item.totalTickets}</td>
+                  <td><span class="badge ${
+                    item.funcionario.situacao === "A"
+                      ? "badge-success"
+                      : "badge-secondary"
+                  }">
+                    ${item.funcionario.situacao === "A" ? "Ativo" : "Inativo"}
+                  </span></td>
                 </tr>
               `
             )
