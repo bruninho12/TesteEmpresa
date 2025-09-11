@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroFood - Dashboard Principal</title>
+    <link rel="stylesheet" href="assets/neurofood-styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg width="30" height="30" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.8" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M15 20 C10 15, 10 10, 18 8 C20 6, 25 6, 28 8 C35 6, 40 10, 38 15 C42 18, 42 25, 38 28 C40 32, 35 38, 28 36 C25 38, 20 38, 18 36 C10 38, 5 32, 8 28 C4 25, 4 18, 8 15 Z" 
+                          fill="url(#brainGradient)" stroke="#ffffff" stroke-width="0.5"/>
+                    <circle cx="18" cy="15" r="1.5" fill="#ffffff" opacity="0.8"/>
+                    <circle cx="25" cy="12" r="1.2" fill="#ffffff" opacity="0.8"/>
+                    <circle cx="32" cy="16" r="1.5" fill="#ffffff" opacity="0.8"/>
+                    <line x1="18" y1="15" x2="25" y2="12" stroke="#ffffff" stroke-width="0.8" opacity="0.6"/>
+                    <line x1="25" y1="12" x2="32" y2="16" stroke="#ffffff" stroke-width="0.8" opacity="0.6"/>
+                </svg>
+            </div>
+            <div class="logo-text">NeuroFood</div>
+        </div>
+        <div class="system-status">
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Sistema Ativo</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot" style="background: #4dd0e1;"></div>
+                <span>12 Linhas Online</span>
+            </div>
+            <div style="color: #a0a0a0; font-size: 14px;">
+                12:34:56 | 15 Nov 2024
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="dashboard-grid">
+            <!-- IVA Panel -->
+            <div class="panel">
+                <div class="panel-title">
+                    <div class="panel-icon"></div>
+                    Índice de Vitalidade Alimentar (IVA)
+                </div>
+                <div class="iva-gauge">
+                    <div class="gauge-background">
+                        <div class="gauge-inner">
+                            <div class="gauge-value">87.3</div>
+                            <div class="gauge-label">IVA Score</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">98.2%</div>
+                        <div class="metric-label">Qualidade</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">94.5%</div>
+                        <div class="metric-label">Segurança</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">89.1%</div>
+                        <div class="metric-label">Nutrição</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">92.7%</div>
+                        <div class="metric-label">Sustentabilidade</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Monitoring -->
+            <div class="panel">
+                <div class="panel-title">
+                    <div class="panel-icon" style="background: linear-gradient(45deg, #ff6b9d, #4dd0e1);"></div>
+                    Monitoramento em Tempo Real
+                </div>
+                <div class="metrics-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
+                    <div class="metric-card">
+                        <div class="metric-value" style="color: #78f794;">23.5°C</div>
+                        <div class="metric-label">Temperatura</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" style="color: #4dd0e1;">6.8 pH</div>
+                        <div class="metric-label">Acidez</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" style="color: #ff6b9d;">420 ppm</div>
+                        <div class="metric-label">CO₂</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" style="color: #ffa502;">65%</div>
+                        <div class="metric-label">Umidade</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div style="position: absolute; top: 10px; left: 15px; font-size: 14px; color: #a0a0a0;">
+                        Parâmetros Críticos - Últimas 24h
+                    </div>
+                    <div class="chart-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert System -->
+        <div class="panel">
+            <div class="panel-title">
+                <div class="panel-icon" style="background: linear-gradient(45deg, #ff6b9d, #ff4757);"></div>
+                Sistema de Alertas Preventivos
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                <div class="alert-item" style="background: rgba(120, 247, 148, 0.1); border: 1px solid rgba(120, 247, 148, 0.3);">
+                    <div class="alert-icon" style="background: #78f794; animation: none;"></div>
+                    <div>
+                        <div style="font-weight: bold; color: #78f794;">Linha 3 - Normal</div>
+                        <div style="font-size: 12px; color: #a0a0a0;">Todos os parâmetros dentro do esperado</div>
+                    </div>
+                </div>
+                <div class="alert-item" style="background: rgba(255, 165, 2, 0.1); border: 1px solid rgba(255, 165, 2, 0.3);">
+                    <div class="alert-icon" style="background: #ffa502;"></div>
+                    <div>
+                        <div style="font-weight: bold; color: #ffa502;">Linha 7 - Atenção</div>
+                        <div style="font-size: 12px; color: #a0a0a0;">Temperatura acima do ideal (+1.2°C)</div>
+                    </div>
+                </div>
+                <div class="alert-item" style="background: rgba(255, 107, 157, 0.1); border: 1px solid rgba(255, 107, 157, 0.3);">
+                    <div class="alert-icon" style="background: #ff6b9d;"></div>
+                    <div>
+                        <div style="font-weight: bold; color: #ff6b9d;">Linha 12 - Crítico</div>
+                        <div style="font-size: 12px; color: #a0a0a0;">pH fora do padrão - intervenção necessária</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Production Lines Status -->
+        <div class="panel" style="margin-top: 30px;">
+            <div class="panel-title">
+                <div class="panel-icon" style="background: linear-gradient(45deg, #4dd0e1, #78f794);"></div>
+                Status das Linhas de Produção
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 20px;">
+                <div class="metric-card" style="border-color: #78f794;">
+                    <div class="metric-value" style="color: #78f794; font-size: 18px;">L1</div>
+                    <div class="metric-label">Ativa</div>
+                    <div style="font-size: 10px; color: #78f794; margin-top: 5px;">● 98.5%</div>
+                </div>
+                <div class="metric-card" style="border-color: #78f794;">
+                    <div class="metric-value" style="color: #78f794; font-size: 18px;">L2</div>
+                    <div class="metric-label">Ativa</div>
+                    <div style="font-size: 10px; color: #78f794; margin-top: 5px;">● 97.2%</div>
+                </div>
+                <div class="metric-card" style="border-color: #78f794;">
+                    <div class="metric-value" style="color: #78f794; font-size: 18px;">L3</div>
+                    <div class="metric-label">Ativa</div>
+                    <div style="font-size: 10px; color: #78f794; margin-top: 5px;">● 99.1%</div>
+                </div>
+                <div class="metric-card" style="border-color: #ffa502;">
+                    <div class="metric-value" style="color: #ffa502; font-size: 18px;">L4</div>
+                    <div class="metric-label">Manutenção</div>
+                    <div style="font-size: 10px; color: #ffa502; margin-top: 5px;">⚠ 0%</div>
+                </div>
+                <div class="metric-card" style="border-color: #78f794;">
+                    <div class="metric-value" style="color: #78f794; font-size: 18px;">L5</div>
+                    <div class="metric-label">Ativa</div>
+                    <div style="font-size: 10px; color: #78f794; margin-top: 5px;">● 96.8%</div>
+                </div>
+                <div class="metric-card" style="border-color: #78f794;">
+                    <div class="metric-value" style="color: #78f794; font-size: 18px;">L6</div>
+                    <div class="metric-label">Ativa</div>
+                    <div style="font-size: 10px; color: #78f794; margin-top: 5px;">● 98.9%</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

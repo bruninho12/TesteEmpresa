@@ -1,0 +1,488 @@
+/* NeuroFood Interface Styles */
+/* Futuristic biological theme with high-tech appearance */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+    color: #e0e0e0;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Animated background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.05) 0%, transparent 50%);
+    z-index: -1;
+    animation: pulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Header */
+.header {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(120, 255, 180, 0.3);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #78f794, #4dd0e1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 20px rgba(120, 247, 148, 0.5); }
+    100% { box-shadow: 0 0 30px rgba(120, 247, 148, 0.8); }
+}
+
+.logo-text {
+    font-size: 28px;
+    font-weight: bold;
+    background: linear-gradient(45deg, #78f794, #4dd0e1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    background: rgba(120, 247, 148, 0.1);
+    border: 1px solid rgba(120, 247, 148, 0.3);
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #78f794;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Main Content */
+.main-content {
+    padding: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(120, 255, 180, 0.2);
+    border-radius: 15px;
+    padding: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #78f794, #4dd0e1, #ff6b9d);
+    animation: flow 3s linear infinite;
+}
+
+@keyframes flow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.panel-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #78f794;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.panel-icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(45deg, #78f794, #4dd0e1);
+    border-radius: 50%;
+}
+
+/* IVA Gauge */
+.iva-gauge {
+    width: 200px;
+    height: 200px;
+    margin: 20px auto;
+    position: relative;
+}
+
+.gauge-background {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        #ff4757 0% 20%,
+        #ffa502 20% 40%,
+        #f1c40f 40% 60%,
+        #2ed573 60% 80%,
+        #1e90ff 80% 100%
+    );
+    position: relative;
+    animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.gauge-inner {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 170px;
+    height: 170px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.gauge-value {
+    font-size: 36px;
+    font-weight: bold;
+    color: #78f794;
+}
+
+.gauge-label {
+    font-size: 14px;
+    color: #a0a0a0;
+    margin-top: 5px;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.metric-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(120, 255, 180, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+.metric-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4dd0e1;
+    margin-bottom: 5px;
+}
+
+.metric-label {
+    font-size: 12px;
+    color: #a0a0a0;
+}
+
+/* Charts */
+.chart-container {
+    height: 200px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(120, 255, 180, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(120, 247, 148, 0.3) 20%,
+        rgba(77, 208, 225, 0.3) 50%,
+        rgba(255, 107, 157, 0.3) 80%,
+        transparent 100%
+    );
+    clip-path: polygon(0 100%, 10% 80%, 20% 60%, 30% 70%, 40% 50%, 50% 40%, 60% 45%, 70% 30%, 80% 35%, 90% 20%, 100% 25%, 100% 100%);
+    animation: wave 4s ease-in-out infinite;
+}
+
+@keyframes wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Alerts */
+.alert-panel {
+    background: rgba(255, 107, 157, 0.1);
+    border: 1px solid rgba(255, 107, 157, 0.3);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.alert-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+}
+
+.alert-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ff6b9d;
+    animation: pulse-alert 2s infinite;
+}
+
+@keyframes pulse-alert {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.1); }
+}
+
+/* QR Code */
+.qr-code {
+    width: 150px;
+    height: 150px;
+    background: white;
+    border-radius: 10px;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #333;
+    position: relative;
+}
+
+.qr-pattern {
+    width: 120px;
+    height: 120px;
+    background: 
+        repeating-linear-gradient(0deg, #000 0px, #000 2px, #fff 2px, #fff 4px),
+        repeating-linear-gradient(90deg, #000 0px, #000 2px, #fff 2px, #fff 4px);
+    opacity: 0.8;
+}
+
+/* DNA Visualization */
+.dna-helix {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+}
+
+.dna-strand {
+    position: absolute;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #78f794, #4dd0e1);
+    border-radius: 2px;
+    animation: dna-rotate 6s linear infinite;
+}
+
+.dna-strand:nth-child(1) { left: 30%; animation-delay: 0s; }
+.dna-strand:nth-child(2) { left: 70%; animation-delay: 3s; }
+
+@keyframes dna-rotate {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+}
+
+.dna-base {
+    position: absolute;
+    width: 60px;
+    height: 2px;
+    background: rgba(120, 247, 148, 0.6);
+    left: 50%;
+    transform: translateX(-50%);
+    animation: pulse 2s infinite;
+}
+
+/* Neural Network */
+.neural-network {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.neuron {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #4dd0e1;
+    animation: neuron-pulse 3s infinite;
+}
+
+.neuron:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+.neuron:nth-child(2) { top: 50%; left: 20%; animation-delay: 0.5s; }
+.neuron:nth-child(3) { top: 80%; left: 15%; animation-delay: 1s; }
+.neuron:nth-child(4) { top: 30%; left: 50%; animation-delay: 1.5s; }
+.neuron:nth-child(5) { top: 70%; left: 55%; animation-delay: 2s; }
+.neuron:nth-child(6) { top: 25%; left: 85%; animation-delay: 2.5s; }
+
+@keyframes neuron-pulse {
+    0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(77, 208, 225, 0.7);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 0 0 20px rgba(77, 208, 225, 0);
+        transform: scale(1.2);
+    }
+}
+
+.connection {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #78f794, transparent);
+    animation: data-flow 2s linear infinite;
+}
+
+@keyframes data-flow {
+    0% { opacity: 0; transform: scaleX(0); }
+    50% { opacity: 1; transform: scaleX(1); }
+    100% { opacity: 0; transform: scaleX(0); }
+}
+
+/* Digital Twin 3D Effect */
+.twin-container {
+    perspective: 1000px;
+    height: 300px;
+}
+
+.twin-model {
+    width: 200px;
+    height: 200px;
+    margin: 50px auto;
+    background: linear-gradient(45deg, #78f794, #4dd0e1);
+    border-radius: 20px;
+    transform: rotateX(15deg) rotateY(15deg);
+    animation: twin-rotate 8s linear infinite;
+    position: relative;
+    box-shadow: 
+        0 0 50px rgba(120, 247, 148, 0.3),
+        inset 0 0 50px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes twin-rotate {
+    0% { transform: rotateX(15deg) rotateY(0deg); }
+    100% { transform: rotateX(15deg) rotateY(360deg); }
+}
+
+.twin-model::before,
+.twin-model::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    border: 2px solid rgba(120, 247, 148, 0.5);
+    animation: scan 3s linear infinite;
+}
+
+.twin-model::after {
+    animation-delay: 1.5s;
+}
+
+@keyframes scan {
+    0%, 100% { opacity: 0; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .main-content {
+        padding: 20px;
+    }
+    
+    .header {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+    }
+}

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroFood - Gêmeo Digital</title>
+    <link rel="stylesheet" href="assets/neurofood-styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg width="30" height="30" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.8" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M15 20 C10 15, 10 10, 18 8 C20 6, 25 6, 28 8 C35 6, 40 10, 38 15 C42 18, 42 25, 38 28 C40 32, 35 38, 28 36 C25 38, 20 38, 18 36 C10 38, 5 32, 8 28 C4 25, 4 18, 8 15 Z" 
+                          fill="url(#brainGradient)" stroke="#ffffff" stroke-width="0.5"/>
+                    <circle cx="18" cy="15" r="1.5" fill="#ffffff" opacity="0.8"/>
+                    <circle cx="25" cy="12" r="1.2" fill="#ffffff" opacity="0.8"/>
+                    <circle cx="32" cy="16" r="1.5" fill="#ffffff" opacity="0.8"/>
+                    <line x1="18" y1="15" x2="25" y2="12" stroke="#ffffff" stroke-width="0.8" opacity="0.6"/>
+                    <line x1="25" y1="12" x2="32" y2="16" stroke="#ffffff" stroke-width="0.8" opacity="0.6"/>
+                </svg>
+            </div>
+            <div class="logo-text">NeuroFood</div>
+        </div>
+        <div class="system-status">
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Gêmeo Digital Ativo</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot" style="background: #4dd0e1;"></div>
+                <span>Sincronização 99.8%</span>
+            </div>
+            <div style="color: #a0a0a0; font-size: 14px;">
+                12:34:56 | 15 Nov 2024
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="dashboard-grid">
+            <!-- 3D Digital Twin Visualization -->
+            <div class="panel">
+                <div class="panel-title">
+                    <div class="panel-icon"></div>
+                    Simulação Virtual da Linha de Produção
+                </div>
+                <div class="twin-container">
+                    <div class="twin-model">
+                        <div style="position: absolute; top: 20%; left: 20%; width: 60%; height: 60%; background: rgba(120, 247, 148, 0.3); border-radius: 10px; animation: data-flow 2s infinite;"></div>
+                        <div style="position: absolute; top: 30%; left: 30%; width: 40%; height: 40%; background: rgba(77, 208, 225, 0.3); border-radius: 8px; animation: data-flow 2s infinite; animation-delay: 0.5s;"></div>
+                        <div style="position: absolute; top: 40%; left: 40%; width: 20%; height: 20%; background: rgba(255, 107, 157, 0.3); border-radius: 6px; animation: data-flow 2s infinite; animation-delay: 1s;"></div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <div style="font-size: 16px; font-weight: bold; color: #78f794; margin-bottom: 10px;">
+                        Linha de Produção Virtual 3D
+                    </div>
+                    <div style="font-size: 12px; color: #a0a0a0; margin-bottom: 15px;">
+                        Modelo digital em tempo real da fábrica física
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button style="padding: 8px 15px; background: linear-gradient(45deg, #78f794, #4dd0e1); border: none; border-radius: 6px; color: white; font-size: 12px; cursor: pointer;">
+                            Rotacionar
+                        </button>
+                        <button style="padding: 8px 15px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 6px; color: white; font-size: 12px; cursor: pointer;">
+                            Zoom
+                        </button>
+                        <button style="padding: 8px 15px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 6px; color: white; font-size: 12px; cursor: pointer;">
+                            Análise
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Failure Prediction -->
+            <div class="panel">
+                <div class="panel-title">
+                    <div class="panel-icon" style="background: linear-gradient(45deg, #ff6b9d, #4dd0e1);"></div>
+                    Predição de Falhas
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                        <span style="color: #78f794; font-weight: bold; font-size: 14px;">Status dos Equipamentos</span>
+                        <span style="color: #4dd0e1; font-size: 12px;">Atualizado há 2 min</span>
+                    </div>
+                    <div style="space-y: 10px;">
+                        <!-- Equipment 1 -->
+                        <div style="background: rgba(120, 247, 148, 0.1); border: 1px solid rgba(120, 247, 148, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: bold; color: #78f794; font-size: 13px;">Pasteurizador L1</div>
+                                    <div style="font-size: 11px; color: #a0a0a0;">Funcionamento normal</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="color: #78f794; font-weight: bold; font-size: 12px;">98.5%</div>
+                                    <div style="font-size: 10px; color: #a0a0a0;">Saúde</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 8px; height: 4px; background: rgba(0, 0, 0, 0.3); border-radius: 2px;">
+                                <div style="width: 98.5%; height: 100%; background: linear-gradient(90deg, #78f794, #4dd0e1); border-radius: 2px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Equipment 2 -->
+                        <div style="background: rgba(255, 165, 2, 0.1); border: 1px solid rgba(255, 165, 2, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: bold; color: #ffa502; font-size: 13px;">Misturador L3</div>
+                                    <div style="font-size: 11px; color: #a0a0a0;">Manutenção em 72h</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="color: #ffa502; font-weight: bold; font-size: 12px;">76.2%</div>
+                                    <div style="font-size: 10px; color: #a0a0a0;">Saúde</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 8px; height: 4px; background: rgba(0, 0, 0, 0.3); border-radius: 2px;">
+                                <div style="width: 76.2%; height: 100%; background: linear-gradient(90deg, #ffa502, #ff6b9d); border-radius: 2px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Equipment 3 -->
+                        <div style="background: rgba(255, 107, 157, 0.1); border: 1px solid rgba(255, 107, 157, 0.3); border-radius: 8px; padding: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: bold; color: #ff6b9d; font-size: 13px;">Resfriador L7</div>
+                                    <div style="font-size: 11px; color: #a0a0a0;">Atenção: vibração alta</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="color: #ff6b9d; font-weight: bold; font-size: 12px;">45.8%</div>
+                                    <div style="font-size: 10px; color: #a0a0a0;">Saúde</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 8px; height: 4px; background: rgba(0, 0, 0, 0.3); border-radius: 2px;">
+                                <div style="width: 45.8%; height: 100%; background: linear-gradient(90deg, #ff6b9d, #ff4757); border-radius: 2px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Control Panel -->
+        <div class="panel">
+            <div class="panel-title">
+                <div class="panel-icon" style="background: linear-gradient(45deg, #4dd0e1, #78f794);"></div>
+                Painel de Controle Interativo
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 25px; margin-top: 25px;">
+                <!-- Temperature Control -->
+                <div style="background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 20px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h4 style="color: #78f794; margin-bottom: 10px; font-size: 14px;">Controle de Temperatura</h4>
+                        <div style="font-size: 24px; color: #78f794; font-weight: bold; margin-bottom: 5px;">23.5°C</div>
+                        <div style="font-size: 11px; color: #a0a0a0;">Meta: 23.0°C ± 0.5°C</div>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                        <button style="flex: 1; padding: 8px; background: rgba(77, 208, 225, 0.2); border: 1px solid #4dd0e1; border-radius: 6px; color: #4dd0e1; font-size: 12px; cursor: pointer;">-</button>
+                        <button style="flex: 2; padding: 8px; background: linear-gradient(45deg, #78f794, #4dd0e1); border: none; border-radius: 6px; color: white; font-size: 12px; cursor: pointer;">AUTO</button>
+                        <button style="flex: 1; padding: 8px; background: rgba(77, 208, 225, 0.2); border: 1px solid #4dd0e1; border-radius: 6px; color: #4dd0e1; font-size: 12px; cursor: pointer;">+</button>
+                    </div>
+                    <div style="height: 6px; background: rgba(0, 0, 0, 0.3); border-radius: 3px; margin-bottom: 10px;">
+                        <div style="width: 85%; height: 100%; background: linear-gradient(90deg, #4dd0e1, #78f794); border-radius: 3px; position: relative;">
+                            <div style="position: absolute; right: -6px; top: -3px; width: 12px; height: 12px; background: #78f794; border-radius: 50%; border: 2px solid #fff;"></div>
+                        </div>
+                    </div>
+                    <div style="font-size: 10px; color: #a0a0a0; text-align: center;">Status: Automático</div>
+                </div>
+
+                <!-- pH Control -->
+                <div style="background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 20px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h4 style="color: #4dd0e1; margin-bottom: 10px; font-size: 14px;">Controle de pH</h4>
+                        <div style="font-size: 24px; color: #4dd0e1; font-weight: bold; margin-bottom: 5px;">6.8</div>
+                        <div style="font-size: 11px; color: #a0a0a0;">Meta: 6.5 - 7.0</div>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                        <button style="flex: 1; padding: 8px; background: rgba(255, 107, 157, 0.2); border: 1px solid #ff6b9d; border-radius: 6px; color: #ff6b9d; font-size: 12px; cursor: pointer;">-</button>
+                        <button style="flex: 2; padding: 8px; background: linear-gradient(45deg, #4dd0e1, #ff6b9d); border: none; border-radius: 6px; color: white; font-size: 12px; cursor: pointer;">AUTO</button>
+                        <button style="flex: 1; padding: 8px; background: rgba(255, 107, 157, 0.2); border: 1px solid #ff6b9d; border-radius: 6px; color: #ff6b9d; font-size: 12px; cursor: pointer;">+</button>
+                    </div>
+                    <div style="height: 6px; background: rgba(0, 0, 0, 0.3); border-radius: 3px; margin-bottom: 10px;">
+                        <div style="width: 68%; height: 100%; background: linear-gradient(90deg, #ff6b9d, #4dd0e1); border-radius: 3px; position: relative;">
+                            <div style="position: absolute; right: -6px; top: -3px; width: 12px; height: 12px; background: #4dd0e1; border-radius: 50%; border: 2px solid #fff;"></div>
+                        </div>
+                    </div>
+                    <div style="font-size: 10px; color: #a0a0a0; text-align: center;">Status: Automático</div>
+                </div>
+
+                <!-- Pressure Control -->
+                <div style="background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 20px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h4 style="color: #ff6b9d; margin-bottom: 10px; font-size: 14px;">Controle de Pressão</h4>
+                        <div style="font-size: 24px; color: #ff6b9d; font-weight: bold; margin-bottom: 5px;">2.3 bar</div>
+                        <div style="font-size: 11px; color: #a0a0a0;">Meta: 2.0 - 2.5 bar</div>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                        <button style="flex: 1; padding: 8px; background: rgba(255, 165, 2, 0.2); border: 1px solid #ffa502; border-radius: 6px; color: #ffa502; font-size: 12px; cursor: pointer;">-</button>
+                        <button style="flex: 2; padding: 8px; background: linear-gradient(45deg, #ff6b9d, #ffa502); border: none; border-radius: 6px; color: white; font-size: 12px; cursor: pointer;">AUTO</button>
+                        <button style="flex: 1; padding: 8px; background: rgba(255, 165, 2, 0.2); border: 1px solid #ffa502; border-radius: 6px; color: #ffa502; font-size: 12px; cursor: pointer;">+</button>
+                    </div>
+                    <div style="height: 6px; background: rgba(0, 0, 0, 0.3); border-radius: 3px; margin-bottom: 10px;">
+                        <div style="width: 72%; height: 100%; background: linear-gradient(90deg, #ffa502, #ff6b9d); border-radius: 3px; position: relative;">
+                            <div style="position: absolute; right: -6px; top: -3px; width: 12px; height: 12px; background: #ff6b9d; border-radius: 50%; border: 2px solid #fff;"></div>
+                        </div>
+                    </div>
+                    <div style="font-size: 10px; color: #a0a0a0; text-align: center;">Status: Automático</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulation Scenarios -->
+        <div class="panel" style="margin-top: 30px;">
+            <div class="panel-title">
+                <div class="panel-icon" style="background: linear-gradient(45deg, #ff6b9d, #ffa502);"></div>
+                Cenários de Simulação
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 20px;">
+                <!-- What-If Analysis -->
+                <div>
+                    <h4 style="color: #78f794; margin-bottom: 15px; font-size: 16px;">🔬 Análise "E Se?"</h4>
+                    <div style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 20px;">
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; color: #4dd0e1; font-size: 13px; margin-bottom: 8px;">Cenário de Teste:</label>
+                            <select style="width: 100%; padding: 8px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 6px; color: white; font-size: 12px;">
+                                <option>Aumento de temperatura +2°C</option>
+                                <option>Redução de pH -0.3</option>
+                                <option>Falha do resfriador L7</option>
+                                <option>Sobrecarga 150% demanda</option>
+                            </select>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                            <div class="metric-card" style="border-color: #ffa502;">
+                                <div style="color: #ffa502; font-weight: bold; font-size: 14px;">-12.3%</div>
+                                <div style="font-size: 10px; color: #a0a0a0;">Qualidade</div>
+                            </div>
+                            <div class="metric-card" style="border-color: #ff6b9d;">
+                                <div style="color: #ff6b9d; font-weight: bold; font-size: 14px;">+8.7h</div>
+                                <div style="font-size: 10px; color: #a0a0a0;">Atraso</div>
+                            </div>
+                        </div>
+                        <button style="width: 100%; padding: 10px; background: linear-gradient(45deg, #78f794, #4dd0e1); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; font-size: 12px;">
+                            Executar Simulação
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Optimization Suggestions -->
+                <div>
+                    <h4 style="color: #4dd0e1; margin-bottom: 15px; font-size: 16px;">⚡ Sugestões de Otimização</h4>
+                    <div style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 20px;">
+                        <div style="space-y: 12px;">
+                            <div style="background: rgba(120, 247, 148, 0.1); border-left: 3px solid #78f794; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                                <div style="font-weight: bold; color: #78f794; font-size: 12px; margin-bottom: 4px;">Economia de Energia</div>
+                                <div style="font-size: 11px; color: #a0a0a0; line-height: 1.4;">
+                                    Reduzir temperatura do resfriador L5 em 0.5°C pode economizar 8% de energia sem impacto na qualidade.
+                                </div>
+                                <div style="font-size: 10px; color: #78f794; margin-top: 6px;">💰 Economia: R$ 2.3k/mês</div>
+                            </div>
+
+                            <div style="background: rgba(77, 208, 225, 0.1); border-left: 3px solid #4dd0e1; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                                <div style="font-weight: bold; color: #4dd0e1; font-size: 12px; margin-bottom: 4px;">Melhoria de Qualidade</div>
+                                <div style="font-size: 11px; color: #a0a0a0; line-height: 1.4;">
+                                    Ajustar tempo de fermentação para 4.2h pode melhorar consistência em 6%.
+                                </div>
+                                <div style="font-size: 10px; color: #4dd0e1; margin-top: 6px;">📈 Melhoria: +6% consistência</div>
+                            </div>
+
+                            <div style="background: rgba(255, 107, 157, 0.1); border-left: 3px solid #ff6b9d; padding: 12px; border-radius: 6px;">
+                                <div style="font-weight: bold; color: #ff6b9d; font-size: 12px; margin-bottom: 4px;">Manutenção Preventiva</div>
+                                <div style="font-size: 11px; color: #a0a0a0; line-height: 1.4;">
+                                    Agendar manutenção do misturador L3 para próxima quinta-feira às 02:00.
+                                </div>
+                                <div style="font-size: 10px; color: #ff6b9d; margin-top: 6px;">⏰ Downtime mínimo: 2.5h</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-time Sync Status -->
+        <div class="panel" style="margin-top: 30px;">
+            <div class="panel-title">
+                <div class="panel-icon" style="background: linear-gradient(45deg, #4dd0e1, #78f794);"></div>
+                Status de Sincronização em Tempo Real
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 20px;">
+                <div class="metric-card" style="border-color: #78f794; text-align: center;">
+                    <div style="font-size: 20px; margin-bottom: 8px;">📡</div>
+                    <div style="color: #78f794; font-weight: bold; font-size: 14px;">99.8%</div>
+                    <div style="font-size: 10px; color: #a0a0a0;">Sincronização</div>
+                    <div style="font-size: 9px; color: #78f794; margin-top: 4px;">● Online</div>
+                </div>
+                <div class="metric-card" style="border-color: #4dd0e1; text-align: center;">
+                    <div style="font-size: 20px; margin-bottom: 8px;">⚡</div>
+                    <div style="color: #4dd0e1; font-weight: bold; font-size: 14px;">0.12s</div>
+                    <div style="font-size: 10px; color: #a0a0a0;">Latência</div>
+                    <div style="font-size: 9px; color: #4dd0e1; margin-top: 4px;">● Ótima</div>
+                </div>
+                <div class="metric-card" style="border-color: #ff6b9d; text-align: center;">
+                    <div style="font-size: 20px; margin-bottom: 8px;">💾</div>
+                    <div style="color: #ff6b9d; font-weight: bold; font-size: 14px;">847GB</div>
+                    <div style="font-size: 10px; color: #a0a0a0;">Dados/Dia</div>
+                    <div style="font-size: 9px; color: #ff6b9d; margin-top: 4px;">● Normal</div>
+                </div>
+                <div class="metric-card" style="border-color: #ffa502; text-align: center;">
+                    <div style="font-size: 20px; margin-bottom: 8px;">🔄</div>
+                    <div style="color: #ffa502; font-weight: bold; font-size: 14px;">15.2k</div>
+                    <div style="font-size: 10px; color: #a0a0a0;">Updates/Min</div>
+                    <div style="font-size: 9px; color: #ffa502; margin-top: 4px;">● Ativo</div>
+                </div>
+                <div class="metric-card" style="border-color: #78f794; text-align: center;">
+                    <div style="font-size: 20px; margin-bottom: 8px;">🎯</div>
+                    <div style="color: #78f794; font-weight: bold; font-size: 14px;">97.4%</div>
+                    <div style="font-size: 10px; color: #a0a0a0;">Precisão</div>
+                    <div style="font-size: 9px; color: #78f794; margin-top: 4px;">● Excelente</div>
+                </div>
+                <div class="metric-card" style="border-color: #4dd0e1; text-align: center;">
+                    <div style="font-size: 20px; margin-bottom: 8px;">🔗</div>
+                    <div style="color: #4dd0e1; font-weight: bold; font-size: 14px;">128</div>
+                    <div style="font-size: 10px; color: #a0a0a0;">Sensores</div>
+                    <div style="font-size: 9px; color: #4dd0e1; margin-top: 4px;">● Conectados</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
