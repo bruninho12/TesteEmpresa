@@ -1,90 +1,138 @@
-// Controlador de aplicativo principal para o aplicativo da web.
+// Controlador principal do Totem de Autoatendimento
 import {
-  funcionariosView,
-  ticketsView,
-  relatoriosView,
-  historicoFuncionariosView,
-  setupNavigation,
+  totemView,
+  carrinhoView,
+  cozinhaView,
+  cadastroView,
 } from "./modules/views.js";
+
 import {
-  setupFuncionariosHandlers,
-  setupTicketsHandlers,
-  setupRelatoriosHandlers,
-  setupHistoricoFuncionariosHandlers,
+  setupTotemHandlers,
+  setupCarrinhoHandlers,
+  setupCozinhaHandlers,
+  setupCadastroHandlers,
 } from "./modules/handlers.js";
+
 import { showAlert } from "./modules/utils.js";
 import * as api from "./modules/api.js";
 
-// Configuração do aplicativo, incluindo IDs de conteúdo e manipuladores de visualização.
+// Configuração das rotas e telas
 const APP_CONFIG = {
   contentId: "app-content",
   views: {
-    funcionarios: {
-      template: funcionariosView,
-      handler: setupFuncionariosHandlers,
-      loader: api.getFuncionarios,
+    totem: {
+      template: totemView,
+      handler: setupTotemHandlers,
+      loader: api.getProdutos,
     },
-    tickets: {
-      template: ticketsView,
-      handler: setupTicketsHandlers,
-      loader: api.getTickets,
+    carrinho: {
+      template: carrinhoView,
+      handler: setupCarrinhoHandlers,
+      loader: null,
     },
-    relatorios: {
-      template: relatoriosView,
-      handler: setupRelatoriosHandlers,
+    cozinha: {
+      template: cozinhaView,
+      handler: setupCozinhaHandlers,
+      loader: api.getPedidos,
     },
-    historicoFuncionarios: {
-      template: historicoFuncionariosView,
-      handler: setupHistoricoFuncionariosHandlers,
-      loader: api.getFuncionariosHistorico,
+    cadastro: {
+      template: cadastroView,
+      handler: setupCadastroHandlers,
+      loader: null,
     },
   },
 };
 
-// Função de inicialização do aplicativo.
 class AppController {
   constructor() {
-    this.initNavigation();
-    setupNavigation(this);
-    this.loadView("funcionarios");
+    this.contentContainer = document.getElementById(APP_CONFIG.contentId);
+
+    // deixa global para onclick funcionar
+    window.appInstance = this;
+
+    this.init();
   }
 
-  initNavigation() {
-    Object.keys(APP_CONFIG.views).forEach((view) => {
-      const navItem = document.getElementById(`nav-${view}`);
-      if (navItem) {
-        navItem.addEventListener("click", () => this.loadView(view));
-      }
+  async init() {
+    this.bindNavEvents(); 
+    await this.loadView("totem");
+  }
+
+  /**
+   * NAVEGAÇÃO FUNCIONANDO
+   */
+  bindNavEvents() {
+    document.getElementById("nav-totem")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      this.loadView("totem");
+    });
+
+    document.getElementById("nav-cozinha")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      this.loadView("cozinha");
+    });
+
+    document.getElementById("nav-cadastro")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      this.loadView("cadastro");
+    });
+
+    document.getElementById("nav-carrinho")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      this.loadView("carrinho");
     });
   }
 
-  // Carrega a visualização especificada, renderiza o conteúdo e configura os manipuladores de eventos.
+  /**
+   * TROCA DE TELA
+   */
   async loadView(viewName) {
     try {
       const viewConfig = APP_CONFIG.views[viewName];
-      if (!viewConfig) return;
+      if (!viewConfig) throw new Error(`Tela "${viewName}" não encontrada.`);
 
-      const container = document.getElementById(APP_CONFIG.contentId);
-      container.innerHTML = viewConfig.template;
+      // loading
+      this.contentContainer.innerHTML = `
+        <div class="text-center mt-5">
+          <div class="spinner-border text-warning"></div>
+          <p class="mt-2">Carregando...</p>
+        </div>
+      `;
 
+      // busca dados
       const data = viewConfig.loader ? await viewConfig.loader() : null;
+
+      // renderiza tela
+      this.contentContainer.innerHTML = viewConfig.template;
+
+      // ativa handlers
       await viewConfig.handler(data);
 
+      // ativa menu correto
       this.setActiveNav(viewName);
+
+      window.scrollTo(0, 0);
     } catch (error) {
-      showAlert(`Falha ao carregar ${viewName}: ${error.message}`, "danger");
+      console.error(error);
+      showAlert(`Erro ao abrir ${viewName}`, "danger");
     }
   }
 
-  // Define o item de navegação ativo com base na visualização atual.
+  /**
+   * ATIVA MENU
+   */
   setActiveNav(activeView) {
-    Object.keys(APP_CONFIG.views).forEach((view) => {
-      const navItem = document.getElementById(`nav-${view}`);
-      if (navItem) {
-        navItem.classList.toggle("active", view === activeView);
+    document.querySelectorAll("header .nav-link").forEach((navItem) => {
+      navItem.classList.remove("active");
+
+      if (navItem.id === `nav-${activeView}`) {
+        navItem.classList.add("active");
       }
     });
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => new AppController());
+// inicialização
+document.addEventListener("DOMContentLoaded", () => {
+  new AppController();
+});

@@ -1,205 +1,155 @@
-export const funcionariosView = `
-  <section>
-    <h2>Gerenciar Funcionários</h2>
-    <div class="form-container">
-      <h3>Cadastrar/Editar Funcionário</h3>
-      <form id="funcionario-form">
-        <input type="hidden" id="funcionario-id">
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="funcionario-nome">Nome:</label>
-            <input type="text" id="funcionario-nome" class="form-control" required>
-          </div>
-          <div class="form-group col-md-6">
-            <label for="funcionario-cpf">CPF:</label>
-            <input type="text" id="funcionario-cpf" class="form-control" 
-                   pattern="\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}" 
-                   placeholder="000.000.000-00" required>
-            <small class="form-text text-muted">Formato: 000.000.000-00</small>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Situação:</label>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="funcionario-situacao" id="funcionario-ativo" value="A" checked>
-            <label class="form-check-label" for="funcionario-ativo">Ativo</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="funcionario-situacao" id="funcionario-inativo" value="I">
-            <label class="form-check-label" for="funcionario-inativo">Inativo</label>
-          </div>
-        </div>
-
-        <div id="funcionario-info" class="mb-3" style="display: none;">
-          <div class="row">
-            <div class="col-md-4">
-              <p><strong>Código:</strong> <span id="funcionario-codigo"></span></p>
-            </div>
-            <div class="col-md-4">
-              <p><strong>Situação:</strong> <span id="funcionario-situacao">Ativo</span></p>
-            </div>
-            <div class="col-md-4">
-              <p><strong>Cadastrado em:</strong> <span id="funcionario-data-criacao"></span></p>
-            </div>
-            <div class="col-md-4">
-              <p><strong>Última alteração:</strong> <span id="funcionario-data-alteracao"></span></p>
-            </div>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        <button type="button" id="cancel-edit-btn" class="btn btn-secondary" style="display:none; margin-left: 10px;">Cancelar</button>
-      </form>
+export const totemView = `
+  <section class="totem-container">
+    <div class="header-totem text-center mb-4">
+        <h2 class="fw-bold">Cardápio</h2>
+        <nav class="nav nav-pills justify-content-center mt-3">
+            <button class="nav-link active" onclick="window.filtrarCategoria('salgados')">Salgados</button>
+            <button class="nav-link" onclick="window.filtrarCategoria('bebidas')">Bebidas</button>
+            <button class="nav-link" onclick="window.filtrarCategoria('doces')">Doces</button>
+        </nav>
     </div>
-    <div class="table-container">
-      <h3>Funcionários Cadastrados</h3>
-      <table id="funcionarios-table" class="table table-striped">
-        <thead class="thead-dark">
-          <tr>
-            <th>Código</th>
-            <th>Nome</th>
-            <th>CPF</th>
-            <th>Situação</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+
+    <!-- Grid onde os produtos do Banco (MongoDB) serão injetados -->
+    <div id="grid-produtos" class="produtos-grid">
+        <div class="text-center w-100 p-5">
+            <div class="spinner-border text-warning"></div>
+            <p>Carregando delícias...</p>
+        </div>
+    </div>
+
+    <!-- Botão Flutuante de Checkout (Estilo App Mobile/Totem) -->
+    <div class="footer-checkout">
+        <button class="btn btn-warning btn-lg shadow-lg fw-bold" onclick="window.appInstance.loadView('carrinho')">
+            VER MEU PEDIDO (R$ <span id="total-flutuante">0,00</span>)
+        </button>
     </div>
   </section>
 `;
 
-export const ticketsView = `
-  <section>
-    <h2>Gerenciar Tickets</h2>
-    <div class="form-container">
-      <h3>Registrar Entrega de Tickets</h3>
-      <form id="ticket-form">
-        <div class="form-group">
-          <label for="ticket-funcionario">Funcionário:</label>
-          <select id="ticket-funcionario" required></select>
-        </div>
-        <div class="form-group">
-          <label for="ticket-quantidade">Quantidade:</label>
-          <input type="number" id="ticket-quantidade" class="form-control" min="1" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Registrar</button>
-      </form>
-      <div id="ticket-info" class="mb-3" style="display: none;">
-        <p><strong>Situação:</strong> <span id="ticket-situacao">Ativo</span></p>
-        <p><strong>Data de Entrega:</strong> <span id="ticket-data-entrega"></span></p>
-      </div>
+/**
+ * TELA DE CHECKOUT (CARRINHO)
+ */
+export const carrinhoView = `
+  <section class="checkout-container container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Meu pedido</h2>
+        <button class="btn btn-link text-danger text-decoration-none" id="btn-limpar">Limpar tudo</button>
     </div>
-    <div class="table-container">
-      <h3>Histórico de Tickets</h3>
-      <table id="tickets-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Funcionário</th>
-            <th>Quantidade</th>
-            <th>Situação Funcionário</th>
-            <th>Data</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+
+    <div class="row">
+      <!-- Lista de Itens Selecionados -->
+      <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <ul id="lista-carrinho" class="list-group list-group-flush">
+                <!-- Itens injetados pelo setupCarrinhoHandlers -->
+            </ul>
+        </div>
+        <button class="btn btn-outline-dark mt-4" onclick="window.appInstance.loadView('totem')">
+            + Adicionar mais itens
+        </button>
+      </div>
+
+      <!-- Resumo de Valores e Finalização -->
+      <div class="col-md-4">
+        <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Subtotal</span>
+                <span id="subtotal" class="fw-bold">R$ 0,00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-4 h4">
+                <strong>Total</strong>
+                <strong id="total-pedido" class="text-dark">R$ 0,00</strong>
+            </div>
+            
+            <button id="btn-finalizar" class="btn btn-warning btn-lg w-100 py-3 fw-bold rounded-3">
+                PRÓXIMO (FINALIZAR)
+            </button>
+            
+            <p class="text-center text-muted small mt-3">
+                Ao clicar em próximo, seu pedido será enviado para a cozinha.
+            </p>
+        </div>
+      </div>
     </div>
   </section>
 `;
 
-export const relatoriosView = `
-  <section id="relatorio-section">
-    <h2>Relatórios</h2>
-    
-    <div id="relatorio-resumo" style="display: none; margin-bottom: 20px;">
-      <h4>Resumo de Tickets</h4>
-      <div>
-        <strong>Total de Tickets:</strong> <span id="total-tickets">0</span>
-      </div>
+/**
+ * MONITOR DA COZINHA
+ */
+export const cozinhaView = `
+  <section class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-dark text-white p-3 rounded shadow">
+        <h2 class="mb-0">👨‍🍳 Monitor de Produção</h2>
+        <div class="spinner-grow text-success spinner-grow-sm"></div>
     </div>
-    <div class="report-section">
-      <h3>Relatório Detalhado</h3>
-      <form id="relatorio-form">
-        <div class="form-relatorio">
-          <div class="form-group col-md-3">
-            <label for="relatorio-funcionario">Funcionário:</label>
-            <select id="relatorio-funcionario" class="form-control">
-              <option value="">Todos</option> 
+    <div class="row" id="monitor-pedidos">
+      <!-- Tickets de pedidos aparecem aqui -->
+    </div>
+  </section>
+`;
+
+/**
+ * CADASTRO DE PRODUTOS (ADMIN)
+ */
+export const cadastroView = `
+  <section class="container mt-4">
+    <div class="card shadow-sm border-0 p-4 rounded-4">
+      <h2 class="mb-4">📦 Gestão de Cardápio</h2>
+      <form id="form-cadastro-produto">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Nome do Lanche</label>
+            <input type="text" id="prod-nome" class="form-control" placeholder="Ex: Big Mac" required>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label fw-bold">Preço (R$)</label>
+            <input type="number" id="prod-preco" class="form-control" step="0.01" required>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label fw-bold">Categoria</label>
+            <select id="prod-categoria" class="form-select">
+              <option value="Salgados">Salgados</option>
+              <option value="Bebidas">Bebidas</option>
+              <option value="Doces">Doces</option>
             </select>
           </div>
-          <div class="form-group col-md-2">
-            <label for="relatorio-status">Status:</label>
-            <select id="relatorio-status" class="form-control">
-              <option value="">Todos</option>
-              <option value="A">Ativo</option>
-              <option value="I">Inativo</option>
-            </select>
-          </div>
-          <div class="form-group col-md-2">
-            <label for="relatorio-inicio">Data Início:</label>
-            <input type="date" id="relatorio-inicio" class="form-control">
-          </div>
-          <div class="form-group col-md-2">
-            <label for="relatorio-fim">Data Fim:</label>
-            <input type="date" id="relatorio-fim" class="form-control">
-          </div>
-          <div class="form-group col-md-1 d-flex align-items-end">
-            <button type="submit" class="btn btn-filtrar">Filtrar</button>
-          </div>
         </div>
+        <div class="mb-3">
+          <label for="arquivo" class="form-label fw-bold">Caminho da Imagem</label>
+          <input type="file" id="prod-imagem" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">Salvar no Cardápio</button>
       </form>
-      
-      <div class="table-responsive mt-3">
-        <table id="relatorio-detalhado" class="table table-striped">
-          <thead class="thead-dark">
-            <tr>
-              <th>Data</th>
-              <th>Funcionário</th>
-              <th>Quantidade</th>
-              <th>Situação</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
     </div>
   </section>
 `;
 
-export const historicoFuncionariosView = `
-  <section>
-    <h2>Histórico de Funcionários</h2>
-    <div class="table-container">
-      <table id="funcionarios-historico-table">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>CPF</th>
-            <th>Situação</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
-`;
-
-// Configuração de navegação
+// Ajuste na navegação para os novos nomes de telas
 export function setupNavigation(appController) {
+  const links = {
+    "nav-totem": "Fazer Pedido",
+    "nav-carrinho": "Carrinho",
+    "nav-cozinha": "Cozinha",
+    "nav-vendas": "Relatório de Vendas",
+    "nav-cadastro": "Cadastro de Produtos",
+  };
+
   const navContainer = document.getElementById("nav-container");
   if (navContainer) {
-    const historyLink = document.createElement("a");
-    historyLink.href = "#";
-    historyLink.className = "nav-link";
-    historyLink.id = "nav-historicoFuncionarios";
-    historyLink.innerText = "Histórico de Funcionários";
-    historyLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      appController.loadView("historicoFuncionarios");
+    navContainer.innerHTML = ""; // Limpa os links antigos de funcionário
+
+    Object.entries(links).forEach(([id, text]) => {
+      const link = document.createElement("a");
+      link.href = "#";
+      link.className = "nav-link";
+      link.id = id;
+      link.innerText = text;
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        appController.loadView(id.replace("nav-", ""));
+      });
+      navContainer.appendChild(link);
     });
-    navContainer.appendChild(historyLink);
   }
 }
