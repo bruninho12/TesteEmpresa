@@ -8,33 +8,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Situacao {
-  A
-  I
+
+model Produto {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  nome      String
+  preco     Float
+  imagem    String?
+  categoria String?
 }
 
-model Funcionario {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  codigo          Int?     @unique
-  nome            String
-  cpf             String   @unique
-  situacao        Situacao @default(A)
-  dataCriacao     DateTime? @default(now())
-  dataAlteracao   DateTime? @updatedAt 
-  tickets         Ticket[]
-  
-  @@map("funcionarios")
+model Pedido {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  itens   String   // Armazena o JSON dos itens
+  status  String   @default("PENDENTE")
+  senha   String
+  total   Float
+  data    DateTime @default(now())
 }
 
-model Ticket {
-  id              String     @id @default(auto()) @map("_id") @db.ObjectId
-  funcionario     Funcionario @relation(fields: [funcionarioId], references: [id])
-  funcionarioId   String     @db.ObjectId
-  codigoFuncionario Int
-  quantidade      Int
-  situacao        Situacao @default(A)
-  dataEntrega     DateTime?   @default(now())
-  dataModificacao DateTime?   @updatedAt
-  
-  @@map("tickets")
-}
+

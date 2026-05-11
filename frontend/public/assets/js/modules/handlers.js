@@ -1,378 +1,300 @@
 import * as api from "./api.js";
-import { showAlert, formatCPF, formatDate } from "./utils.js";
+import { showAlert } from "./utils.js";
 
-// Funcionários Handlers
-export function setupFuncionariosHandlers(funcionarios) {
-  const form = document.getElementById("funcionario-form");
-  if (form) {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      try {
-        const formData = {
-          nome: document.getElementById("funcionario-nome").value,
-          cpf: document
-            .getElementById("funcionario-cpf")
-            .value.replace(/\D/g, ""),
-          situacao: document.querySelector(
-            'input[name="funcionario-situacao"]:checked'
-          ).value,
-        };
+/**
+ * 🔹 ESTADO GLOBAL (COM PERSISTÊNCIA)
+ */
+let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
 
-        const id = document.getElementById("funcionario-id").value;
-        const result = id
-          ? await api.updateFuncionario(id, formData)
-          : await api.addFuncionario(formData);
+function salvarCarrinho() {
+  localStorage.setItem("carrinho", JSON.stringify(carrinho));
+}
 
-        showAlert("Funcionário salvo com sucesso!");
-        setTimeout(() => {
-          location.reload();
-        }, 500);
-      } catch (error) {
-        showAlert(error.message, "danger");
-      }
-    });
+function calcularTotal() {
+  return carrinho.reduce((acc, item) => acc + item.preco, 0);
+}
 
-    // Lógica do botão Cancelar
-    const cancelBtn = document.getElementById("cancel-edit-btn");
-    if (cancelBtn) {
-      cancelBtn.addEventListener("click", () => {
-        form.reset();
-        document.getElementById("funcionario-id").value = "";
-        cancelBtn.style.display = "none";
-        document.getElementById("funcionario-info").style.display = "none";
-      });
+/**
+ * 🔹 UTIL
+ */
+function criarImagem(src, alt) {
+  const img = document.createElement("img");
+  img.src = src || "assets/img/default.png";
+  img.alt = alt;
+  img.onerror = () => {
+    img.src = `https://placehold.co/150?text=${encodeURIComponent(alt)}`;
+  };
+  return img;
+}
+
+/**
+ * 1. TELA DE SELEÇÃO (TOTEM)
+ */
+export async function setupTotemHandlers(produtos) {
+  const gridProdutos = document.getElementById("grid-produtos");
+  const totalFlutuante = document.getElementById("total-flutuante");
+
+  function atualizarTotal() {
+    if (totalFlutuante) {
+      totalFlutuante.textContent = calcularTotal().toFixed(2);
     }
   }
 
-  // Tabela de renderização
-  const tableBody = document.querySelector("#funcionarios-table tbody");
-  if (tableBody) {
-    tableBody.innerHTML = funcionarios
-      .map(
-        (func) => `
-      <tr>
-        <td>${func.codigo}</td>
-        <td>${func.nome}</td>
-        <td>${formatCPF(func.cpf)}</td>
-        <td><span class="badge ${
-          func.situacao === "A" ? "bg-success" : "bg-secondary"
-        }">
-          ${func.situacao === "A" ? "Ativo" : "Inativo"}
-        </span></td>
-        <td>
-          <button class="btn btn-sm btn-primary btn-edit" data-id="${func.id}" 
-                  data-nome="${func.nome}" 
-                  data-cpf="${func.cpf}"
-                  data-situacao="${func.situacao}">
-            Editar
-          </button>
-        </td>
-      </tr>
-    `
-      )
-      .join("");
+  function adicionarAoCarrinho(prod) {
+    carrinho.push(prod);
+    salvarCarrinho();
+    atualizarTotal();
+    showAlert(`${prod.nome} adicionado!`, "success");
+  }
 
-    document.querySelectorAll(".btn-edit").forEach((btn) => {
+  function renderizarProdutos(categoria = "todos") {
+    const filtrados =
+      categoria === "todos"
+        ? produtos
+        : produtos.filter(
+            (p) => p.categoria?.toLowerCase() === categoria.toLowerCase(),
+          );
+
+    gridProdutos.innerHTML = "";
+
+    filtrados.forEach((prod) => {
+      const card = document.createElement("div");
+      card.className = "produto-card shadow-sm";
+
+      const img = criarImagem(prod.imagem, prod.nome);
+
+      const container = document.createElement("div");
+      container.className = "p-2";
+
+      const titulo = document.createElement("h5");
+      titulo.textContent = prod.nome;
+
+      const preco = document.createElement("p");
+      preco.className = "preco text-success fw-bold";
+      preco.textContent = `R$ ${prod.preco.toFixed(2)}`;
+
+      const btn = document.createElement("button");
+      btn.className = "btn btn-sm btn-warning w-100 fw-bold";
+      btn.textContent = "ADICIONAR";
+
+      btn.addEventListener("click", () =>
+        adicionarAoCarrinho({
+          id: prod.id,
+          nome: prod.nome,
+          preco: prod.preco,
+          imagem: prod.imagem,
+        }),
+      );
+
+      container.appendChild(titulo);
+      container.appendChild(preco);
+      container.appendChild(btn);
+
+      card.appendChild(img);
+      card.appendChild(container);
+
+      gridProdutos.appendChild(card);
+    });
+  }
+
+  window.filtrarCategoria = (categoria) => {
+    document.querySelectorAll("header .nav-link").forEach((btn) => {
+      btn.classList.toggle(
+        "active",
+        btn.innerText.toLowerCase() === categoria.toLowerCase(),
+      );
+    });
+
+    renderizarProdutos(categoria);
+  };
+
+  renderizarProdutos();
+  atualizarTotal();
+}
+
+/**
+ * 2. TELA DE CARRINHO
+ */
+export async function setupCarrinhoHandlers() {
+  const lista = document.getElementById("lista-carrinho");
+  const subtotalElem = document.getElementById("subtotal");
+  const totalElem = document.getElementById("total-pedido");
+  const btnFinalizar = document.getElementById("btn-finalizar");
+  const btnLimpar = document.getElementById("btn-limpar");
+
+  function renderizar() {
+    if (!lista) return;
+
+    lista.innerHTML = "";
+
+    if (carrinho.length === 0) {
+      lista.innerHTML = `<li class="text-center p-5">Seu carrinho está vazio.</li>`;
+    } else {
+      carrinho.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.className =
+          "list-group-item d-flex justify-content-between align-items-center border-0 border-bottom py-3";
+
+        const left = document.createElement("div");
+        left.className = "d-flex align-items-center";
+
+        const img = criarImagem(item.imagem, item.nome);
+        img.width = 50;
+        img.classList.add("me-3");
+
+        const info = document.createElement("div");
+        info.innerHTML = `
+          <h6 class="mb-0">${item.nome}</h6>
+          <small class="text-muted">Unitário: R$ ${item.preco.toFixed(2)}</small>
+        `;
+
+        left.appendChild(img);
+        left.appendChild(info);
+
+        const right = document.createElement("div");
+        right.className = "d-flex align-items-center";
+
+        const valor = document.createElement("strong");
+        valor.className = "me-3";
+        valor.textContent = `R$ ${item.preco.toFixed(2)}`;
+
+        const btnRemover = document.createElement("button");
+        btnRemover.className = "btn btn-sm btn-outline-danger";
+        btnRemover.textContent = "🗑️";
+
+        btnRemover.addEventListener("click", () => {
+          carrinho.splice(index, 1);
+          salvarCarrinho();
+          renderizar();
+        });
+
+        right.appendChild(valor);
+        right.appendChild(btnRemover);
+
+        li.appendChild(left);
+        li.appendChild(right);
+
+        lista.appendChild(li);
+      });
+    }
+
+    const total = calcularTotal();
+    subtotalElem.textContent = `R$ ${total.toFixed(2)}`;
+    totalElem.textContent = `R$ ${total.toFixed(2)}`;
+  }
+
+  btnLimpar?.addEventListener("click", () => {
+    carrinho = [];
+    salvarCarrinho();
+    renderizar();
+  });
+
+  btnFinalizar?.addEventListener("click", async () => {
+    if (carrinho.length === 0) {
+      return showAlert("Carrinho vazio!", "warning");
+    }
+
+    try {
+      const senha = Date.now().toString().slice(-4);
+
+      await api.addPedido({
+        itens: carrinho,
+        total: calcularTotal(),
+        senha,
+        status: "PENDENTE",
+      });
+
+      showAlert(`Pedido Confirmado! Senha: ${senha}`, "success");
+
+      carrinho = [];
+      salvarCarrinho();
+
+      window.appInstance.loadView("totem");
+    } catch (e) {
+      showAlert("Erro ao finalizar pedido.");
+    }
+  });
+
+  renderizar();
+}
+
+/**
+ * 3. COZINHA
+ */
+export async function setupCozinhaHandlers(pedidos) {
+  const container = document.getElementById("monitor-pedidos");
+
+  async function atualizar(lista) {
+    const ativos = lista.filter((p) => p.status !== "ENTREGUE");
+
+    container.innerHTML = "";
+
+    ativos.forEach((p) => {
+      const col = document.createElement("div");
+      col.className = "col-md-4 mb-3";
+
+      col.innerHTML = `
+        <div class="card shadow-sm border-warning">
+          <div class="card-header bg-warning">
+            <strong>SENHA: ${p.senha}</strong>
+          </div>
+          <div class="card-body">
+            <ul>${p.itens.map((i) => `<li>${i.nome}</li>`).join("")}</ul>
+            <button class="btn btn-success w-100">PRONTO</button>
+          </div>
+        </div>
+      `;
+
+      const btn = col.querySelector("button");
+
       btn.addEventListener("click", async () => {
-        const form = document.getElementById("funcionario-form");
-        form.reset();
-
-        document.getElementById("funcionario-id").value = btn.dataset.id;
-        document.getElementById("funcionario-nome").value = btn.dataset.nome;
-        document.getElementById("funcionario-cpf").value = btn.dataset.cpf;
-
-        // Defina o botão de opção correto com base no status atual
-        if (btn.dataset.situacao === "A") {
-          document.getElementById("funcionario-ativo").checked = true;
-        } else {
-          document.getElementById("funcionario-inativo").checked = true;
-        }
-
-        // Mostrar informações atuais do funcionário
-        document.getElementById("funcionario-info").style.display = "block";
-
-        // Mostrar botão cancelar ao editar
-        const cancelBtn = document.getElementById("cancel-edit-btn");
-        if (cancelBtn) {
-          cancelBtn.style.display = "inline-block";
-        }
-
-        //Obtenha dados completos dos funcionários para campos adicionais
-        const funcionario = await api.getFuncionario(btn.dataset.id);
-        console.log("Funcionario data fetched (raw):", funcionario);
-
-        document.getElementById("funcionario-codigo").textContent =
-          btn.parentElement.parentElement.cells[0].textContent;
-        document.getElementById("funcionario-situacao").textContent =
-          btn.dataset.situacao === "A" ? "Ativo" : "Inativo";
-        document.getElementById("funcionario-situacao").className = `badge ${
-          btn.dataset.situacao === "A" ? "badge-success" : "badge-secondary"
-        }`;
-        document.getElementById("funcionario-data-criacao").textContent =
-          formatDate(funcionario.dataCriacao);
-        document.getElementById("funcionario-data-alteracao").textContent =
-          formatDate(funcionario.dataAlteracao);
+        await api.updatePedidoStatus(p.id, "PRONTO");
+        const novos = await api.getPedidos();
+        atualizar(novos);
       });
+
+      container.appendChild(col);
     });
   }
+
+  atualizar(pedidos);
 }
 
-// Tickets Handlers
-export async function setupTicketsHandlers(tickets) {
-  const funcionarioSelect = document.getElementById("ticket-funcionario");
-  if (funcionarioSelect) {
-    try {
-      const funcionarios = await api.getFuncionarios();
-      funcionarioSelect.innerHTML = funcionarios
-        .filter((f) => f.situacao === "A")
-        .map(
-          (f) =>
-            `<option value="${f.id}">${f.codigo} - ${f.nome} - ${f.cpf.replace(
-              /(\d{3})(\d{3})(\d{3})(\d{2})/,
-              "$1.$2.$3-$4"
-            )}</option>`
-        )
-        .join("");
-    } catch (error) {
-      showAlert("Falha ao carregar funcionários: " + error.message, "danger");
+/**
+ * 4. CADASTRO
+ */
+export async function setupCadastroHandlers() {
+  const form = document.getElementById("form-cadastro-produto");
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const fileInput = document.getElementById("prod-imagem");
+    const file = fileInput.files[0];
+
+    if (!file) {
+      return alert("Selecione uma imagem!");
     }
-  }
 
-  const form = document.getElementById("ticket-form");
-  if (form) {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      try {
-        const funcionarioId =
-          document.getElementById("ticket-funcionario").value;
-        const quantidade = document.getElementById("ticket-quantidade").value;
-
-        if (!quantidade || quantidade <= 0) {
-          throw new Error("Quantidade deve ser maior que zero");
-        }
-
-        const formData = {
-          funcionarioId,
-          quantidade: parseInt(quantidade),
-          situacao: "A",
-        };
-
-        const result = await api.addTicket(formData);
-        showAlert("Ticket registrado com sucesso!");
-        form.reset();
-        setTimeout(() => {
-          location.reload();
-        }, 500);
-      } catch (error) {
-        showAlert(error.message, "danger");
-      }
-    });
-  }
-
-  // Tabela de renderização
-  const tableBody = document.querySelector("#tickets-table tbody");
-  if (tableBody) {
-    tableBody.innerHTML = tickets
-      .map(
-        (ticket) => `
-      <tr>
-        <td>${ticket.codigoFuncionario}</td>
-        <td>${ticket.funcionario.nome}</td>
-        <td>${ticket.quantidade}</td>
-        <td><span class="badge ${
-          ticket.situacao === "A" ? "bg-success" : "bg-secondary"
-        }">
-          ${ticket.situacao === "A" ? "Ativo" : "Inativo"}
-        </span></td>
-        <td>${formatDate(ticket.dataModificacao)}</td>
-      </tr>
-    `
-      )
-      .join("");
-  }
-}
-
-// Histórico de Funcionários Handlers
-export async function setupHistoricoFuncionariosHandlers() {
-  try {
-    console.log("Iniciando carregamento do histórico de funcionários...");
-    const funcionarios = await api.getFuncionariosHistorico();
-    console.log("Dados recebidos da API:", funcionarios);
-
-    const tableBody = document.querySelector(
-      "#funcionarios-historico-table tbody"
+    const formData = new FormData();
+    formData.append("nome", document.getElementById("prod-nome").value);
+    formData.append("preco", document.getElementById("prod-preco").value);
+    formData.append(
+      "categoria",
+      document.getElementById("prod-categoria").value,
     );
+    formData.append("imagem", file);
 
-    if (!tableBody) {
-      console.error("Elemento tbody não encontrado");
-      return;
-    }
-
-    if (!funcionarios || funcionarios.length === 0) {
-      console.warn("Nenhum funcionário retornado pela API");
-      tableBody.innerHTML = `<tr><td colspan="4">Nenhum funcionário encontrado</td></tr>`;
-      return;
-    }
-
-    console.log(`Renderizando ${funcionarios.length} funcionários`);
-    tableBody.innerHTML = funcionarios
-      .map(
-        (func) => `
-        <tr>
-          <td>${func.nome}</td>
-          <td>${formatCPF(func.cpf)}</td>
-          <td><span class="badge ${
-            func.situacao === "A" ? "bg-success" : "bg-secondary"
-          }">
-            ${func.situacao === "A" ? "Ativo" : "Inativo"}
-          </span></td>
-          <td>
-            <button class="btn btn-sm btn-primary btn-edit" 
-                    data-id="${func.id}"
-                    data-nome="${func.nome}"
-                    data-cpf="${func.cpf}"
-                    data-situacao="${func.situacao}">
-              Editar
-            </button>
-          </td>
-        </tr>
-      `
-      )
-      .join("");
-
-    console.log("Adicionando handlers para botões de edição...");
-    document.querySelectorAll(".btn-edit").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        console.log("Editando funcionário:", btn.dataset.id);
-        document.getElementById("funcionario-id").value = btn.dataset.id;
-        document.getElementById("funcionario-nome").value = btn.dataset.nome;
-        document.getElementById("funcionario-cpf").value = btn.dataset.cpf;
-
-        if (btn.dataset.situacao === "A") {
-          document.getElementById("funcionario-ativo").checked = true;
-        } else {
-          document.getElementById("funcionario-inativo").checked = true;
-        }
-
-        document.getElementById("funcionario-info").style.display = "block";
-        document.getElementById("funcionario-situacao").textContent =
-          btn.dataset.situacao === "A" ? "Ativo" : "Inativo";
-        document.getElementById("funcionario-situacao").className = `badge ${
-          btn.dataset.situacao === "A" ? "badge-success" : "badge-secondary"
-        }`;
-
-        document.getElementById("funcionario-form").scrollIntoView();
+    try {
+      await fetch("/api/produtos", {
+        method: "POST",
+        body: formData, // 👈 IMPORTANTE
       });
-    });
 
-    console.log("Histórico de funcionários carregado com sucesso");
-  } catch (error) {
-    console.error("Erro ao carregar histórico:", error);
-    showAlert(
-      "Falha ao carregar histórico de funcionários: " + error.message,
-      "danger"
-    );
-  }
-}
-
-// Relatórios Handlers
-export async function setupRelatoriosHandlers() {
-  const funcionarioSelect = document.getElementById("relatorio-funcionario");
-  if (funcionarioSelect) {
-    try {
-      const funcionarios = await api.getFuncionarios();
-      funcionarioSelect.innerHTML =
-        `<option value="todos">Todos</option>` +
-        funcionarios
-          .map(
-            (f) =>
-              `<option value="${f.id}">${f.codigo} - ${
-                f.nome
-              } - ${f.cpf.replace(
-                /(\d{3})(\d{3})(\d{3})(\d{2})/,
-                "$1.$2.$3-$4"
-              )}</option>`
-          )
-          .join("");
-    } catch (error) {
-      showAlert("Falha ao carregar funcionários: " + error.message, "danger");
+      alert("Produto cadastrado com imagem!");
+      form.reset();
+    } catch (err) {
+      alert("Erro ao cadastrar produto");
     }
-  }
-
-  const form = document.getElementById("relatorio-form");
-  if (form) {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      try {
-        const funcionarioId =
-          document.getElementById("relatorio-funcionario").value === "todos"
-            ? ""
-            : document.getElementById("relatorio-funcionario").value;
-        const status = document.getElementById("relatorio-status").value;
-        const inicio = document.getElementById("relatorio-inicio").value;
-        const fim = document.getElementById("relatorio-fim").value;
-
-        // Construir parâmetros de consulta
-        const params = {
-          funcionarioId: funcionarioId || undefined,
-          status: status || undefined,
-          inicio: inicio || undefined,
-          fim: fim || undefined,
-        };
-
-        const response = await api.getRelatorios("detalhado", params);
-
-        const tableBody = document.querySelector("#relatorio-detalhado tbody");
-        const summarySection = document.getElementById("relatorio-resumo");
-
-        if (response.summary) {
-          summarySection.style.display = "block";
-          document.getElementById("total-tickets").textContent = response.total;
-
-          // Renderizar tabela de resumo por funcionário
-          tableBody.innerHTML = response.summary
-            .map(
-              (item) => `
-                <tr>
-                  <td>${formatDate(item.data)}</td>
-                  <td>${item.funcionario.nome}</td>
-                  <td>${item.totalTickets}</td>
-                  <td><span class="badge ${
-                    item.funcionario.situacao === "A"
-                      ? "badge-success"
-                      : "badge-secondary"
-                  }">
-                    ${item.funcionario.situacao === "A" ? "Ativo" : "Inativo"}
-                  </span></td>
-                </tr>
-              `
-            )
-            .join("");
-        } else {
-          // Modo detalhado (funcionário específico)
-          summarySection.style.display = "none";
-          tableBody.innerHTML = response
-            .map(
-              (ticket) => `
-                <tr>
-                  <td>${formatDate(ticket.dataModificacao)}</td>
-                  <td>${ticket.funcionario.nome}</td>
-                  <td>${ticket.quantidade}</td>
-                  <td><span class="badge ${
-                    ticket.situacao === "A"
-                      ? "badge-success"
-                      : "badge-secondary"
-                  }">
-                    ${ticket.situacao === "A" ? "Ativo" : "Inativo"}
-                  </span></td>
-                </tr>
-              `
-            )
-            .join("");
-        }
-      } catch (error) {
-        showAlert(error.message, "danger");
-      }
-    });
-  }
+  });
 }
