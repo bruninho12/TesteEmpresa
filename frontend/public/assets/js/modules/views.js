@@ -3,7 +3,8 @@ export const totemView = `
     <div class="header-totem text-center mb-4">
         <h2 class="fw-bold">Cardápio</h2>
         <nav class="nav nav-pills justify-content-center mt-3">
-            <button class="nav-link active" onclick="window.filtrarCategoria('salgados')">Salgados</button>
+            <button class="nav-link" onclick="window.filtrarCategoria('todos')">Todos</button>
+            <button class="nav-link" onclick="window.filtrarCategoria('salgados')">Salgados</button>
             <button class="nav-link" onclick="window.filtrarCategoria('bebidas')">Bebidas</button>
             <button class="nav-link" onclick="window.filtrarCategoria('doces')">Doces</button>
         </nav>
